@@ -16,18 +16,22 @@ import CityDetails from "./components/city-details/CityDetails"
 // REACT COMPONENT
 function App() {
   const [selectedCity, setSelectedCity] = useState(null)
+  // used by children components to manipulate main: main
+  // should center its children components or not
+  const [centerInPage, setCenterInPage] = useState(false)
 
   return (
     <BrowserRouter>
       <header>
         <MyNav />
       </header>
-      <main className="d-flex flex-column justify-content-center">
+      {/* the main can center the elements or not (default) */}
+      <main className={centerInPage ? "d-flex flex-column justify-content-center" : ""}>
         <Routes>
           {/* home changes selected city */}
-          <Route path="/" element={<Home setSelectedCity={setSelectedCityHelper({ setSelectedCity })} />} />
+          <Route path="/" element={<Home setSelectedCity={setSelectedCityHelper({ setSelectedCity })} setCenterInPage={setCenterInPage} />} />
           {/* city details displays selected city */}
-          <Route path="/city-details" element={<CityDetails city={selectedCity} />} />
+          <Route path="/city-details" element={<CityDetails city={selectedCity} setCenterInPage={setCenterInPage} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

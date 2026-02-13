@@ -13,6 +13,11 @@ const Home = (props) => {
   })
   const navigate = useNavigate()
 
+  useEffect(() => {
+    // the main centers this component or not
+    props.setCenterInPage(true)
+  })
+
   return (
     <Container fluid style={{ marginTop: "-5rem" }}>
       <Row className="flex-column justify-content-center align-items-center gap-3">

@@ -16,6 +16,11 @@ const CityDetails = (props) => {
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
 
+  useEffect(() => {
+    // the main centers this component or not
+    props.setCenterInPage(false)
+  })
+
   // when the city is changed, run hook
   useEffect(() => {
     // if there's no city (example: at mounting), do not run
@@ -37,14 +42,14 @@ const CityDetails = (props) => {
               <h2 className="text-center">Weather in {props.city}</h2>
             </Col>
           </Row>
-          <Row className="justify-content-center gap-2">
-            <Col xs={12} md={4} lg={3} className="text-center border">
+          <Row className="justify-content-center g-3">
+            <Col xs={12} md={6} lg={4} className="text-center border">
               A
             </Col>
-            <Col xs={12} md={4} lg={3} className="text-center border">
+            <Col xs={12} md={6} lg={4} className="text-center border">
               B
             </Col>
-            <Col xs={12} md={4} lg={3} className="text-center border">
+            <Col xs={12} md={6} lg={4} className="text-center border">
               C
             </Col>
           </Row>
