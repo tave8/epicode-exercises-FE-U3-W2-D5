@@ -34,77 +34,78 @@ const CityDetails = (props) => {
 
   return (
     <>
-      <Helmet>
-        <title>
-          Weather in {props.city.name}, {props.city.state}, {props.city.country} | Tempify
-        </title>
-      </Helmet>
-
       {/* valid city chosen */}
       {isCityValid(props.city) && !isLoading && !isError && (
-        <Container fluid className="mt-3">
-          <Row>
-            <Col>
-              <h2 className="text-center">
-                Weather in {props.city.name}, {props.city.state}, {props.city.country}
-              </h2>
-            </Col>
-          </Row>
-          <Row className="justify-content-center g-3">
-            <Col xs={12} className="border">
-              <Row className="flex-column">
-                <Col>{/* <h3>Weather</h3> */}</Col>
-                <Col>
-                  <p>
-                    {weather.weather.main}, {weather.weather.description}
-                  </p>
-                  <p>Temperature: {weather.temperaturesCelsius.temp} °C</p>
-                  <p>
-                    Min/max Temperature: {weather.temperaturesCelsius.temp_min} / {weather.temperaturesCelsius.temp_max} °C
-                  </p>
-                </Col>
-              </Row>
-            </Col>
+        <>
+          <Helmet>
+            <title>
+              Weather in {props.city.name}, {props.city.state}, {props.city.country} | Tempify
+            </title>
+          </Helmet>
+          <Container fluid className="mt-3">
+            <Row>
+              <Col>
+                <h2 className="text-center">
+                  Weather in {props.city.name}, {props.city.state}, {props.city.country}
+                </h2>
+              </Col>
+            </Row>
+            <Row className="justify-content-center g-3">
+              <Col xs={12} className="border">
+                <Row className="flex-column">
+                  <Col>{/* <h3>Weather</h3> */}</Col>
+                  <Col>
+                    <p>
+                      {weather.weather.main}, {weather.weather.description}
+                    </p>
+                    <p>Temperature: {weather.temperaturesCelsius.temp} °C</p>
+                    <p>
+                      Min/max Temperature: {weather.temperaturesCelsius.temp_min} / {weather.temperaturesCelsius.temp_max} °C
+                    </p>
+                  </Col>
+                </Row>
+              </Col>
 
-            <Col xs={12} className="border">
-              <Row className="flex-column">
-                <Col>
-                  <h3>
-                    Forecast <span className="fs-5">{forecast.info.rangeDatetimeForUI}</span>
-                  </h3>
-                </Col>
-                <Col>
-                  <table className="table table-striped table-hover">
-                    <thead>
-                      <tr>
-                        <th>Date/Time</th>
-                        <th>Weather</th>
-                        <th>Temperature</th>
-                        <th>Min/max Temp.</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {forecast.list.map((forecastInfo, i) => {
-                        return (
-                          <tr key={i}>
-                            <td>{forecastInfo.datetime.forUI}</td>
-                            <td>
-                              {forecastInfo.weather.main}, {forecastInfo.weather.description}
-                            </td>
-                            <td>{forecastInfo.temperaturesCelsius.temp} °C</td>
-                            <td>
-                              {forecastInfo.temperaturesCelsius.temp_min} / {forecastInfo.temperaturesCelsius.temp_max} °C
-                            </td>
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </table>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </Container>
+              <Col xs={12} className="border">
+                <Row className="flex-column">
+                  <Col>
+                    <h3>
+                      Forecast <span className="fs-5">{forecast.info.rangeDatetimeForUI}</span>
+                    </h3>
+                  </Col>
+                  <Col>
+                    <table className="table table-striped table-hover">
+                      <thead>
+                        <tr>
+                          <th>Date/Time</th>
+                          <th>Weather</th>
+                          <th>Temperature</th>
+                          <th>Min/max Temp.</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {forecast.list.map((forecastInfo, i) => {
+                          return (
+                            <tr key={i}>
+                              <td>{forecastInfo.datetime.forUI}</td>
+                              <td>
+                                {forecastInfo.weather.main}, {forecastInfo.weather.description}
+                              </td>
+                              <td>{forecastInfo.temperaturesCelsius.temp} °C</td>
+                              <td>
+                                {forecastInfo.temperaturesCelsius.temp_min} / {forecastInfo.temperaturesCelsius.temp_max} °C
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </Container>
+        </>
       )}
 
       {/* city not chosen yet */}

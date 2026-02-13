@@ -5,6 +5,10 @@ import { Helmet } from "react-helmet"
 
 import OpenWeatherMap from "../../assets/js/OpenWeatherMap"
 
+const GLOBAL = {
+  lastTimeout: null,
+}
+
 /**
  * props: {
  *     setSelectedCity: callable. changes the selected city in the parent
@@ -51,10 +55,15 @@ const Home = (props) => {
                 value={formValues.search}
                 onChange={(event) => {
                   const userSearch = event.target.value
-                  // setTimeout(() => {
+                  setFormValues({ search: userSearch })
+
+                  // delay fetching remote cities
+                  clearTimeout(GLOBAL.lastTimeout)
+                  GLOBAL.lastTimeout = setTimeout(() => {
                     handleSearchChange({ setFormValues, setCitiesList, setIsLoadingCities, setIsErrorCities })(userSearch)
-                  // }, 600)
+                  }, 600)
                 }}
+                
               />
             </Form>
 
@@ -120,11 +129,9 @@ const handleSearchChange = (componentInfo) => {
     if (userSearch.length == 0) {
       // empty cities
       setCitiesList([])
-      setFormValues({search: ""})
-      return 
+      return
     }
 
-    setFormValues({ search: userSearch })
     try {
       setIsLoadingCities(true)
       setIsErrorCities(false)
@@ -138,6 +145,16 @@ const handleSearchChange = (componentInfo) => {
       setIsErrorCities(true)
       console.error(err)
     }
+  }
+}
+
+function debounce(func, delay) {
+  let timeout
+  return function (...args) {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => {
+      func.apply(this, args)
+    }, delay)
   }
 }
 
