@@ -8,7 +8,7 @@ const MyNav = (props) => {
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container fluid>
         <Link to="/" className="nav-item navbar-brand">
-          Weather app
+          Tempify
         </Link>
         {/* <Navbar.Brand href="#home">Weather app</Navbar.Brand>
          */}

@@ -8,7 +8,7 @@ const MyFooter = (props) => {
     <Container fluid className="bg-body-tertiary">
         <Row className="justify-content-center align-items-center">
             <Col className="text-center">
-                <p className="my-3">Weather app</p>
+                <p className="my-3">Tempify - {new Date().getFullYear()} - Giuseppe Tavella</p>
             </Col>  
         </Row>
     </Container>

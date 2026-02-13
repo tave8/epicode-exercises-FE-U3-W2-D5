@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { BrowserRouter, Routes, Route, Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { Container, Row, Col, CardGroup, Card, Spinner, Alert, Button } from "react-bootstrap"
+import { Helmet } from "react-helmet"
 
 import OpenWeatherMap from "../../assets/js/OpenWeatherMap"
 
@@ -33,12 +34,20 @@ const CityDetails = (props) => {
 
   return (
     <>
+      <Helmet>
+        <title>
+          Weather in {props.city.name}, {props.city.state}, {props.city.country} | Tempify
+        </title>
+      </Helmet>
+
       {/* valid city chosen */}
       {isCityValid(props.city) && !isLoading && !isError && (
-        <Container fluid>
+        <Container fluid className="mt-3">
           <Row>
             <Col>
-              <h2 className="text-center">Weather in {props.city.name}</h2>
+              <h2 className="text-center">
+                Weather in {props.city.name}, {props.city.state}, {props.city.country}
+              </h2>
             </Col>
           </Row>
           <Row className="justify-content-center g-3">
@@ -47,11 +56,12 @@ const CityDetails = (props) => {
                 <Col>{/* <h3>Weather</h3> */}</Col>
                 <Col>
                   <p>
-                    Weather: {weather.weather.main}, {weather.weather.description}
+                    {weather.weather.main}, {weather.weather.description}
                   </p>
                   <p>Temperature: {weather.temperaturesCelsius.temp} °C</p>
-                  <p>Min Temperature: {weather.temperaturesCelsius.temp_min} °C</p>
-                  <p>Max Temperature: {weather.temperaturesCelsius.temp_max} °C</p>
+                  <p>
+                    Min/max Temperature: {weather.temperaturesCelsius.temp_min} / {weather.temperaturesCelsius.temp_max} °C
+                  </p>
                 </Col>
               </Row>
             </Col>
@@ -70,8 +80,7 @@ const CityDetails = (props) => {
                         <th>Date/Time</th>
                         <th>Weather</th>
                         <th>Temperature</th>
-                        <th>Min Temperature</th>
-                        <th>Max Temperature</th>
+                        <th>Min/max Temp.</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -79,10 +88,13 @@ const CityDetails = (props) => {
                         return (
                           <tr key={i}>
                             <td>{forecastInfo.datetime.forUI}</td>
-                            <td>{forecastInfo.weather.main}, {forecastInfo.weather.description}</td>
+                            <td>
+                              {forecastInfo.weather.main}, {forecastInfo.weather.description}
+                            </td>
                             <td>{forecastInfo.temperaturesCelsius.temp} °C</td>
-                            <td>{forecastInfo.temperaturesCelsius.temp_min} °C</td>
-                            <td>{forecastInfo.temperaturesCelsius.temp_max} °C</td>
+                            <td>
+                              {forecastInfo.temperaturesCelsius.temp_min} / {forecastInfo.temperaturesCelsius.temp_max} °C
+                            </td>
                           </tr>
                         )
                       })}
