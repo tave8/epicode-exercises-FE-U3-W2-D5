@@ -38,7 +38,7 @@ const CityDetails = (props) => {
         <Container fluid>
           <Row>
             <Col>
-              <h2 className="text-center">Weather in {props.city}</h2>
+              <h2 className="text-center">Weather in {props.city.name}</h2>
             </Col>
           </Row>
           <Row className="justify-content-center g-3">
@@ -75,9 +75,9 @@ const CityDetails = (props) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {forecast.list.map((forecastInfo) => {
+                      {forecast.list.map((forecastInfo, i) => {
                         return (
-                          <tr>
+                          <tr key={i}>
                             <td>{forecastInfo.datetime.forUI}</td>
                             <td>{forecastInfo.weather.main}, {forecastInfo.weather.description}</td>
                             <td>{forecastInfo.temperaturesCelsius.temp} °C</td>
@@ -155,20 +155,14 @@ const getAllRemoteWeather = (componentInfo) => {
 const getRemoteWeather = async (city, { prettify = false }) => {
   // make API call
   const weatherApi = new OpenWeatherMap({ prettify })
-  const data = await weatherApi.getWeather({
-    cityName: city,
-    countryCode: "IT",
-  })
+  const data = await weatherApi.getWeather(city)
   return data
 }
 
 const getRemoteForecast = async (city, { prettify = false }) => {
   // make API call
   const weatherApi = new OpenWeatherMap({ prettify })
-  const data = await weatherApi.getForecast({
-    cityName: city,
-    countryCode: "IT",
-  })
+  const data = await weatherApi.getForecast(city)
   return data
 }
 

@@ -1,25 +1,51 @@
 class OpenWeatherMap {
-  static API_URL = "https://api.openweathermap.org/data/2.5"
-  static API_KEY = "bc45c3a9cab5095ab402b5746a08d45e"
+  static API_KEY = "af81d5f5261b17acc8c969dc030c1528"
+  static API_URL_DATA = "https://api.openweathermap.org/data/2.5"
+  static API_URL_GEO = "http://api.openweathermap.org/geo/1.0"
 
   constructor({ prettify = false }) {
     this.prettify = prettify
   }
 
-  async getWeather({ cityName, countryCode }) {
-    const url = `${OpenWeatherMap.API_URL}/weather?q=${cityName},${countryCode}&appid=${OpenWeatherMap.API_KEY}`
+  /**
+   * Get weather for city, given latitude and longitude.
+   * city: {
+   *    lat: float
+   *    long: float
+   * }
+   */
+  async getWeather(city) {
+    const url = `${OpenWeatherMap.API_URL_DATA}/weather?lat=${city.lat}&lon=${city.lon}&appid=${OpenWeatherMap.API_KEY}`
     const config = {}
     const resp = await fetch(url, config)
     const data = await resp.json()
     return OpenWeatherMap.prettifyWeatherFromRemoteJson(data, this.prettify)
   }
 
-  async getForecast({ cityName, countryCode }) {
-    const url = `${OpenWeatherMap.API_URL}/forecast?q=${cityName},${countryCode}&appid=${OpenWeatherMap.API_KEY}`
+  /**
+   * Get forecast for city, given latitude and longitude.
+   *
+   * city: {
+   *    lat: float
+   *    long: float
+   * }
+   */
+  async getForecast(city) {
+    const url = `${OpenWeatherMap.API_URL_DATA}/forecast?lat=${city.lat}&lon=${city.lon}&appid=${OpenWeatherMap.API_KEY}`
     const config = {}
     const resp = await fetch(url, config)
     const data = await resp.json()
     return OpenWeatherMap.prettifyForecastFromRemoteJson(data, this.prettify)
+  }
+
+  async getCitySuggestions({ searchQuery, limit = 5 }) {
+    // example
+    // http://api.openweathermap.org/geo/1.0/direct?q=London&limit=5&appid=af81d5f5261b17acc8c969dc030c1528
+    const url = `${OpenWeatherMap.API_URL_GEO}/direct?q=${searchQuery}&limit=${limit}&appid=${OpenWeatherMap.API_KEY}`
+    const config = {}
+    const resp = await fetch(url, config)
+    const data = await resp.json()
+    return OpenWeatherMap.prettifyCitySuggestionsFromRemoteJson(data, this.prettify)
   }
 
   /**
@@ -102,7 +128,7 @@ class OpenWeatherMap {
 
     const ret = {
       info: {},
-      list: []
+      list: [],
     }
 
     // list of forecasts
@@ -137,15 +163,22 @@ class OpenWeatherMap {
     })
 
     const firstForecast = ret.list[0]
-    const lastForecast = ret.list[ret.list.length-1]
+    const lastForecast = ret.list[ret.list.length - 1]
 
     // info about this forecast
-     ret.info = {
+    ret.info = {
       // example: 11 Feb 2026 12:00 - 15 Feb 2026 15:00
-      rangeDatetimeForUI: `${firstForecast.datetime.forUI} - ${lastForecast.datetime.forUI}`
+      rangeDatetimeForUI: `${firstForecast.datetime.forUI} - ${lastForecast.datetime.forUI}`,
     }
 
     return ret
+  }
+
+  static prettifyCitySuggestionsFromRemoteJson(remoteJson, prettify = true) {
+    if (!prettify) {
+      return remoteJson
+    }
+    return remoteJson
   }
 
   static kelvinToCelsius = (k) => parseFloat((k - 273.15).toFixed(2))
