@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
 
+import { useState, useEffect } from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 // base components
@@ -10,17 +11,23 @@ import NotFound from "./components/NotFound"
 
 // pages components
 import Home from "./components/home/Home"
+import CityDetails from "./components/city-details/CityDetails"
 
+// REACT COMPONENT
 function App() {
+  const [selectedCity, setSelectedCity] = useState(null)
+
   return (
     <BrowserRouter>
       <header>
         <MyNav />
       </header>
-      <main style={{  }}>
+      <main>
         <Routes>
-          <Route path="/" element={<Home />} />
-          {/* <Route path="/city-details" element={<CityDetails />} /> */}
+          {/* home changes selected city */}
+          <Route path="/" element={<Home setSelectedCity={setSelectedCityHelper({ setSelectedCity })} />} />
+          {/* city details displays selected city */}
+          <Route path="/city-details" element={<CityDetails city={selectedCity} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
@@ -29,6 +36,17 @@ function App() {
       </footer>
     </BrowserRouter>
   )
+}
+
+// HELPERS
+
+const setSelectedCityHelper = (componentInfo) => {
+  const { setSelectedCity } = componentInfo
+  // this inner function will be used by children components
+  // to change the parent's state
+  return (newCity) => {
+    setSelectedCity(newCity)
+  }
 }
 
 export default App
