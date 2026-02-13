@@ -4,7 +4,6 @@ import { Container, Row, Col, CardGroup, Card, Spinner, Alert, Button } from "re
 
 import OpenWeatherMap from "../../assets/js/OpenWeatherMap"
 
-
 /** REACT COMPONENT
  * props: {
  *      city: obj. the selected city from the parent
@@ -31,7 +30,26 @@ const CityDetails = (props) => {
   return (
     <>
       {/* valid city chosen */}
-      {isCityValid(props.city) && <p>City is valid, do something</p>}
+      {isCityValid(props.city) && (
+        <Container fluid>
+          <Row>
+            <Col>
+              <h2 className="text-center">Weather in {props.city}</h2>
+            </Col>
+          </Row>
+          <Row className="justify-content-center gap-2">
+            <Col xs={12} md={4} lg={3} className="text-center border">
+              A
+            </Col>
+            <Col xs={12} md={4} lg={3} className="text-center border">
+              B
+            </Col>
+            <Col xs={12} md={4} lg={3} className="text-center border">
+              C
+            </Col>
+          </Row>
+        </Container>
+      )}
 
       {/* city not chosen yet */}
       {!isCityValid(props.city) && (
@@ -103,8 +121,8 @@ const getRemoteWeather = async (city) => {
   // make API call
   const weatherApi = new OpenWeatherMap()
   const data = await weatherApi.getWeather({
-    cityName: city, 
-    countryCode: "IT"
+    cityName: city,
+    countryCode: "IT",
   })
   return data
 }
