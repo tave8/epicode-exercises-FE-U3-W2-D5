@@ -15,6 +15,8 @@ const Home = (props) => {
     search: "",
   })
   const [citiesList, setCitiesList] = useState([])
+  const [isLoadingCities, setIsLoadingCities] = useState(false)
+  const [isErrorCities, setIsErrorCities] = useState(false)
 
   const navigate = useNavigate()
 
@@ -26,9 +28,7 @@ const Home = (props) => {
   return (
     <>
       <Helmet>
-        <title>
-          Search weather | Tempify
-        </title>
+        <title>Search weather | Tempify</title>
       </Helmet>
 
       <Container fluid style={{ marginTop: "-5rem" }}>
@@ -48,16 +48,17 @@ const Home = (props) => {
                 placeholder="Search city..."
                 autoFocus
                 aria-label="Search"
+                value={formValues.search}
                 onChange={(event) => {
                   const userSearch = event.target.value
-                  handleSearchChange({ setFormValues, setCitiesList })(userSearch)
+                  handleSearchChange({ setFormValues, setCitiesList, setIsLoadingCities, setIsErrorCities })(userSearch)
                 }}
               />
             </Form>
 
-            {/* cities list */}
-            {citiesList.length > 0 && (
-              <ListGroup className="mt-2">
+            {/* cities list (at least 1 city) */}
+            {citiesList.length > 0 && !isLoadingCities && (
+              <ListGroup className="mt-2 position-absolute">
                 {citiesList.map((city, idx) => (
                   <ListGroup.Item
                     key={idx}
@@ -84,7 +85,26 @@ const Home = (props) => {
               </ListGroup>
             )}
 
-            {/* <Link to="/city-details">Go to city details</Link> */}
+            {/* cities list (no city found) */}
+            {citiesList.length == 0 && formValues.search.length > 0 && !isLoadingCities && (
+              <Alert variant="info" className="mt-2 position-absolute">
+                <Alert.Heading>No city found</Alert.Heading>
+              </Alert>
+            )}
+
+            {/* loading cities */}
+            {isLoadingCities && (
+              <div className="text-center mt-3 position-absolute">
+                <Spinner animation="grow" variant="info" />
+              </div>
+            )}
+
+            {/* error in cities */}
+            {isErrorCities && (
+              <Alert variant="danger" className="mt-2 position-absolute">
+                <Alert.Heading>Problem while fetching cities.</Alert.Heading>
+              </Alert>
+            )}
           </Col>
         </Row>
       </Container>
@@ -93,12 +113,29 @@ const Home = (props) => {
 }
 
 const handleSearchChange = (componentInfo) => {
-  const { setFormValues, setCitiesList } = componentInfo
+  const { setFormValues, setCitiesList, setIsLoadingCities, setIsErrorCities } = componentInfo
   return async (userSearch) => {
+    if (userSearch.length == 0) {
+      // empty cities
+      setCitiesList([])
+      setFormValues({search: ""})
+      return 
+    }
+
     setFormValues({ search: userSearch })
-    const weatherApi = new OpenWeatherMap({ prettify: true })
-    const citiesList = await weatherApi.getCitySuggestions({ searchQuery: userSearch })
-    setCitiesList(citiesList)
+    try {
+      setIsLoadingCities(true)
+      setIsErrorCities(false)
+      const weatherApi = new OpenWeatherMap({ prettify: true })
+      const citiesList = await weatherApi.getCitySuggestions({ searchQuery: userSearch })
+      setIsLoadingCities(false)
+      setIsErrorCities(false)
+      setCitiesList(citiesList)
+    } catch (err) {
+      setIsLoadingCities(false)
+      setIsErrorCities(true)
+      console.error(err)
+    }
   }
 }
 
