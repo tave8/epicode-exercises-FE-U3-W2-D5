@@ -22,7 +22,7 @@ function App() {
       <header>
         <MyNav />
       </header>
-      <main>
+      <main className="d-flex flex-column justify-content-center">
         <Routes>
           {/* home changes selected city */}
           <Route path="/" element={<Home setSelectedCity={setSelectedCityHelper({ setSelectedCity })} />} />
