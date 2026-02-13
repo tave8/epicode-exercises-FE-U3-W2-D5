@@ -41,16 +41,16 @@ const CityDetails = (props) => {
       )}
 
       {/* loading */}
-      {isLoading && (
+      {isCityValid(props.city) && isLoading && (
         <div className="text-center mt-3">
           <Spinner animation="grow" variant="danger" />
         </div>
       )}
 
       {/* error */}
-      {isError && (
+      {isCityValid(props.city) && isError && (
         <Alert variant="danger">
-          <Alert.Heading>Problem</Alert.Heading>
+          <Alert.Heading>Problem while fetching weather info.</Alert.Heading>
         </Alert>
       )}
     </>
