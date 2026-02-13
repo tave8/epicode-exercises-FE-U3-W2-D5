@@ -51,7 +51,9 @@ const Home = (props) => {
                 value={formValues.search}
                 onChange={(event) => {
                   const userSearch = event.target.value
-                  handleSearchChange({ setFormValues, setCitiesList, setIsLoadingCities, setIsErrorCities })(userSearch)
+                  // setTimeout(() => {
+                    handleSearchChange({ setFormValues, setCitiesList, setIsLoadingCities, setIsErrorCities })(userSearch)
+                  // }, 600)
                 }}
               />
             </Form>
