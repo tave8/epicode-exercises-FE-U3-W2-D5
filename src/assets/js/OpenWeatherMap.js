@@ -1,7 +1,7 @@
 class OpenWeatherMap {
   static API_KEY = "af81d5f5261b17acc8c969dc030c1528"
   static API_URL_DATA = "https://api.openweathermap.org/data/2.5"
-  static API_URL_GEO = "http://api.openweathermap.org/geo/1.0"
+  static API_URL_GEO = "https://api.openweathermap.org/geo/1.0"
 
   constructor({ prettify = false }) {
     this.prettify = prettify
