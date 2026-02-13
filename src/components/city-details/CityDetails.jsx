@@ -118,7 +118,7 @@ const CityDetails = (props) => {
       {/* loading */}
       {isCityValid(props.city) && isLoading && (
         <div className="text-center mt-3">
-          <Spinner animation="grow" variant="danger" />
+          <Spinner animation="grow" variant="info" />
         </div>
       )}
 

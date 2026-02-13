@@ -57,13 +57,14 @@ const Home = (props) => {
                   const userSearch = event.target.value
                   setFormValues({ search: userSearch })
 
+                  setIsLoadingCities(true)
                   // delay fetching remote cities
                   clearTimeout(GLOBAL.lastTimeout)
                   GLOBAL.lastTimeout = setTimeout(() => {
                     handleSearchChange({ setFormValues, setCitiesList, setIsLoadingCities, setIsErrorCities })(userSearch)
                   }, 600)
                 }}
-                
+
               />
             </Form>
 
@@ -128,6 +129,7 @@ const handleSearchChange = (componentInfo) => {
   return async (userSearch) => {
     if (userSearch.length == 0) {
       // empty cities
+      setIsLoadingCities(false)
       setCitiesList([])
       return
     }
