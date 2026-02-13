@@ -19,7 +19,7 @@ class OpenWeatherMap {
     const config = {}
     const resp = await fetch(url, config)
     const data = await resp.json()
-    return data
+    return OpenWeatherMap.prettifyForecastFromRemoteJson(data, this.prettify)
   }
 
   /**
@@ -93,7 +93,84 @@ class OpenWeatherMap {
     }
   }
 
+  static prettifyForecastFromRemoteJson(remoteJson, prettify = true) {
+    if (!prettify) {
+      return remoteJson
+    }
+    // for now no special action is done
+    // return remoteJson
+
+    const ret = {
+      info: {},
+      list: []
+    }
+
+    // list of forecasts
+    ret.list = remoteJson.list.map((forecast) => {
+      const datetimeObj = OpenWeatherMap.datetimeStrToJSObj(forecast.dt_txt)
+      return {
+        weather: {
+          main: forecast.weather[0].main,
+          description: forecast.weather[0].description,
+        },
+
+        datetime: {
+          forUI: OpenWeatherMap.datetimeForUI(datetimeObj),
+          obj: datetimeObj,
+          month: datetimeObj.getMonth() + 1,
+          year: datetimeObj.getFullYear(),
+          day: datetimeObj.getDate(),
+          hour: datetimeObj.getHours(),
+          minute: datetimeObj.getMinutes(),
+        },
+        temperaturesCelsius: {
+          temp: OpenWeatherMap.kelvinToCelsius(forecast.main.temp),
+          feels_like: OpenWeatherMap.kelvinToCelsius(forecast.main.feels_like),
+          temp_min: OpenWeatherMap.kelvinToCelsius(forecast.main.temp_min),
+          temp_max: OpenWeatherMap.kelvinToCelsius(forecast.main.temp_max),
+          pressure: OpenWeatherMap.kelvinToCelsius(forecast.main.pressure),
+          humidity: OpenWeatherMap.kelvinToCelsius(forecast.main.humidity),
+          sea_level: OpenWeatherMap.kelvinToCelsius(forecast.main.sea_level),
+          grnd_level: OpenWeatherMap.kelvinToCelsius(forecast.main.grnd_level),
+        },
+      }
+    })
+
+    const firstForecast = ret.list[0]
+    const lastForecast = ret.list[ret.list.length-1]
+
+    // info about this forecast
+     ret.info = {
+      // example: 11 Feb 2026 12:00 - 15 Feb 2026 15:00
+      rangeDatetimeForUI: `${firstForecast.datetime.forUI} - ${lastForecast.datetime.forUI}`
+    }
+
+    return ret
+  }
+
   static kelvinToCelsius = (k) => parseFloat((k - 273.15).toFixed(2))
+
+  /**
+   * "2026-02-13 18:00:00" -> JS date obj
+   */
+  static datetimeStrToJSObj = (datetimeStr) => {
+    if (!datetimeStr) return null
+
+    // "2026-02-13 18:00:00" -> "2026-02-13T18:00:00"
+    const isoString = datetimeStr.replace(" ", "T")
+
+    return new Date(isoString)
+  }
+
+  /**
+   *
+   */
+  static datetimeForUI = (datetimeObj) => {
+    return new Intl.DateTimeFormat(undefined, {
+      dateStyle: "medium",
+      timeStyle: "short",
+    }).format(datetimeObj)
+  }
 }
 
 export default OpenWeatherMap

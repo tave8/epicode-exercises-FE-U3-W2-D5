@@ -11,7 +11,6 @@ import OpenWeatherMap from "../../assets/js/OpenWeatherMap"
  */
 const CityDetails = (props) => {
   const [weather, setWeather] = useState()
-  const [degrees, setDegrees] = useState()
   const [forecast, setForecast] = useState()
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
@@ -28,7 +27,7 @@ const CityDetails = (props) => {
       return
     }
     // there's a valid city, so run
-    const componentInfo = { city: props.city, setWeather, setDegrees, setForecast, setIsLoading, setIsError }
+    const componentInfo = { city: props.city, setWeather, setForecast, setIsLoading, setIsError }
     getAllRemoteWeather(componentInfo)()
   }, [props.city])
 
@@ -45,16 +44,14 @@ const CityDetails = (props) => {
           <Row className="justify-content-center g-3">
             <Col xs={12} className="border">
               <Row className="flex-column">
-                <Col>
-                  <h3>Weather</h3>
-                </Col>
+                <Col>{/* <h3>Weather</h3> */}</Col>
                 <Col>
                   <p>
-                    Weather: {weather.weather.main} - {weather.weather.description}
+                    Weather: {weather.weather.main}, {weather.weather.description}
                   </p>
-                  <p>
-                    {/* Weather: {weather.weather[0].main} - {weather.weather[0].description} */}
-                  </p>
+                  <p>Temperature: {weather.temperaturesCelsius.temp} °C</p>
+                  <p>Min Temperature: {weather.temperaturesCelsius.temp_min} °C</p>
+                  <p>Max Temperature: {weather.temperaturesCelsius.temp_max} °C</p>
                 </Col>
               </Row>
             </Col>
@@ -62,7 +59,7 @@ const CityDetails = (props) => {
             <Col xs={12} className="border">
               <Row className="flex-column">
                 <Col>
-                  <h3>Forecast</h3>
+                  <h3>Forecast <span className="fs-5">{forecast.info.rangeDatetimeForUI}</span></h3>
                 </Col>
                 <Col>
                   <p>x</p>
@@ -103,7 +100,7 @@ const CityDetails = (props) => {
 
 // ***** GET ALL REMOTE WEATHER INFO (WEATHER, DEGREES, FORECAST, etc.)
 const getAllRemoteWeather = (componentInfo) => {
-  const { city, setIsLoading, setIsError, setWeather, setDegrees, setForecast } = componentInfo
+  const { city, setWeather, setForecast, setIsLoading, setIsError } = componentInfo
 
   return () => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -112,20 +109,14 @@ const getAllRemoteWeather = (componentInfo) => {
 
     const promises = [
       getRemoteWeather(city, { prettify: true }),
-      // getRemoteWeather(city),
-      // getRemoteWeather(city),
+      getRemoteForecast(city, { prettify: true }),
     ]
 
     Promise.all(promises)
       .then((remoteResults) => {
-        const [remoteWeather, remoteDegrees, remoteForecast] = remoteResults
-        // const [remoteMovie, remoteMovieComments] = remoteResults
-        // setMovie(remoteMovie)
-        // console.log(remoteMovieComments)
+        const [remoteWeather, remoteForecast] = remoteResults
         setWeather(remoteWeather)
-        // setWeather(remoteWeather)
-        // setWeather(remoteWeather)
-
+        setForecast(remoteForecast)
         setIsLoading(false)
         setIsError(false)
         console.log(remoteResults)
@@ -145,6 +136,16 @@ const getRemoteWeather = async (city, { prettify = false }) => {
   // make API call
   const weatherApi = new OpenWeatherMap({ prettify })
   const data = await weatherApi.getWeather({
+    cityName: city,
+    countryCode: "IT",
+  })
+  return data
+}
+
+const getRemoteForecast = async (city, { prettify = false }) => {
+  // make API call
+  const weatherApi = new OpenWeatherMap({ prettify })
+  const data = await weatherApi.getForecast({
     cityName: city,
     countryCode: "IT",
   })
