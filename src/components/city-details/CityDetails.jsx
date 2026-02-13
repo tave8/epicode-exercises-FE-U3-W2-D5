@@ -35,7 +35,7 @@ const CityDetails = (props) => {
   return (
     <>
       {/* valid city chosen */}
-      {isCityValid(props.city) && (
+      {isCityValid(props.city) && !isLoading && !isError && (
         <Container fluid>
           <Row>
             <Col>
@@ -43,14 +43,33 @@ const CityDetails = (props) => {
             </Col>
           </Row>
           <Row className="justify-content-center g-3">
-            <Col xs={12} md={6} lg={4} className="text-center border">
-              A
+            <Col xs={12} className="border">
+              <Row className="flex-column">
+                <Col>
+                  <h3>Weather</h3>
+                </Col>
+                <Col>
+                  <p>
+                    Weather: {weather.weather.main} - {weather.weather.description}
+                  </p>
+                  <p>
+                    {/* Weather: {weather.weather[0].main} - {weather.weather[0].description} */}
+                  </p>
+                </Col>
+              </Row>
             </Col>
-            <Col xs={12} md={6} lg={4} className="text-center border">
-              B
-            </Col>
-            <Col xs={12} md={6} lg={4} className="text-center border">
-              C
+
+            <Col xs={12} className="border">
+              <Row className="flex-column">
+                <Col>
+                  <h3>Forecast</h3>
+                </Col>
+                <Col>
+                  <p>x</p>
+                  <p>x</p>
+                  <p>x</p>
+                </Col>
+              </Row>
             </Col>
           </Row>
         </Container>
@@ -92,7 +111,7 @@ const getAllRemoteWeather = (componentInfo) => {
     setIsError(false)
 
     const promises = [
-      getRemoteWeather(city),
+      getRemoteWeather(city, { prettify: true }),
       // getRemoteWeather(city),
       // getRemoteWeather(city),
     ]
@@ -122,9 +141,9 @@ const getAllRemoteWeather = (componentInfo) => {
 
 // REMOTE FETCHES
 
-const getRemoteWeather = async (city) => {
+const getRemoteWeather = async (city, { prettify = false }) => {
   // make API call
-  const weatherApi = new OpenWeatherMap()
+  const weatherApi = new OpenWeatherMap({ prettify })
   const data = await weatherApi.getWeather({
     cityName: city,
     countryCode: "IT",
