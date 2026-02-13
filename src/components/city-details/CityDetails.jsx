@@ -59,12 +59,35 @@ const CityDetails = (props) => {
             <Col xs={12} className="border">
               <Row className="flex-column">
                 <Col>
-                  <h3>Forecast <span className="fs-5">{forecast.info.rangeDatetimeForUI}</span></h3>
+                  <h3>
+                    Forecast <span className="fs-5">{forecast.info.rangeDatetimeForUI}</span>
+                  </h3>
                 </Col>
                 <Col>
-                  <p>x</p>
-                  <p>x</p>
-                  <p>x</p>
+                  <table className="table table-striped table-hover">
+                    <thead>
+                      <tr>
+                        <th>Date/Time</th>
+                        <th>Weather</th>
+                        <th>Temperature</th>
+                        <th>Min Temperature</th>
+                        <th>Max Temperature</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {forecast.list.map((forecastInfo) => {
+                        return (
+                          <tr>
+                            <td>{forecastInfo.datetime.forUI}</td>
+                            <td>{forecastInfo.weather.main}, {forecastInfo.weather.description}</td>
+                            <td>{forecastInfo.temperaturesCelsius.temp} °C</td>
+                            <td>{forecastInfo.temperaturesCelsius.temp_min} °C</td>
+                            <td>{forecastInfo.temperaturesCelsius.temp_max} °C</td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
                 </Col>
               </Row>
             </Col>
@@ -107,10 +130,7 @@ const getAllRemoteWeather = (componentInfo) => {
     setIsLoading(true)
     setIsError(false)
 
-    const promises = [
-      getRemoteWeather(city, { prettify: true }),
-      getRemoteForecast(city, { prettify: true }),
-    ]
+    const promises = [getRemoteWeather(city, { prettify: true }), getRemoteForecast(city, { prettify: true })]
 
     Promise.all(promises)
       .then((remoteResults) => {
